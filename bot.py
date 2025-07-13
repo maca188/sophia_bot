@@ -15,6 +15,8 @@ from database import setup_db, get_random_card, give_card_to_user, get_user_inve
 
 ADMIN_COMMAND_NAMES = {"admin_add_card", "admin_remove_card", "admin_give", "admin_edit_card", "admin_pay", "event_add", "event_remove"}
 
+DATABASE_PATH = "cards.db"
+
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
 
@@ -1116,5 +1118,34 @@ async def help_command(interaction: discord.Interaction):
         color=discord.Color(0xfaffbf)
     )
     await interaction.response.send_message(embed=embed, ephemeral=False)
+
+@bot.tree.command(name="backup_db", description="Backup the database file (Admin only)")
+@app_commands.checks.has_permissions(administrator=True)
+async def backup_db(interaction: discord.Interaction):
+    try:
+        await interaction.response.send_message(
+            content="Here is the current database backup:",
+            file=discord.File(DATABASE_PATH),
+            ephemeral=True
+        )
+    except Exception as e:
+        await interaction.response.send_message(
+            content=f"Failed to send database backup: {e}",
+            ephemeral=True
+        )
+
+# Handle missing permissions error nicely
+@backup_db.error
+async def backup_db_error(interaction: discord.Interaction, error):
+    if isinstance(error, app_commands.errors.MissingPermissions):
+        await interaction.response.send_message(
+            content="❌ You must be an **Administrator** to use this command.",
+            ephemeral=True
+        )
+    else:
+        await interaction.response.send_message(
+            content=f"An unexpected error occurred: {error}",
+            ephemeral=True
+        )
 
 bot.run(os.getenv('DISCORD_TOKEN'))
