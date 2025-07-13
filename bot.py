@@ -1105,4 +1105,4 @@ async def help_command(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=embed, ephemeral=False)
 
-bot.run(os.gotenev('DISCORD_TOKEN'))
+bot.run(os.getenv('DISCORD_TOKEN'))
