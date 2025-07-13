@@ -8,9 +8,8 @@ import random
 from dotenv import load_dotenv
 from math import ceil
 from typing import Optional
-intents = discord.Intents.default()
-intents.members = True
-client = discord.Client(intents=intents)
+from flask import Flask
+import threading
 
 from database import setup_db, get_random_card, give_card_to_user, get_user_inventory, get_user_card_count, connect, get_card_by_code
 
@@ -18,6 +17,19 @@ ADMIN_COMMAND_NAMES = {"admin_add_card", "admin_remove_card", "admin_give", "adm
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
+
+# ====== Dummy Web Server for Render ======
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "I'm alive!"
+
+def run_web():
+    app.run(host='0.0.0.0', port=8080)
+
+threading.Thread(target=run_web).start()
 
 intents = discord.Intents.default()
 bot = commands.Bot(command_prefix="/", intents=intents)
