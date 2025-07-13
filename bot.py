@@ -1147,5 +1147,5 @@ async def backup_db_error(interaction: discord.Interaction, error):
             content=f"An unexpected error occurred: {error}",
             ephemeral=True
         )
-
+DATABASE_URL = os.getenv("DATABASE_URL")
 bot.run(os.getenv('DISCORD_TOKEN'))
